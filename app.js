@@ -1,5 +1,36 @@
-import React, { useState, useEffect, createContext, useContext } from 'react';
-import { LogIn, UserPlus, Dumbbell, LogOut, ArrowLeft, PlusCircle, Save, Trash2, User, Users, ClipboardList, DollarSign, BookCopy, CheckSquare, Square, Settings, ChevronsRight, Coffee, HeartPulse, Repeat, Ruler, AlertTriangle, Calendar, ChevronLeft, ChevronRight, Timer, Edit, Home, X, Share } from 'lucide-react';
+const { useState, useEffect, createContext, useContext } = React;
+const {
+    LogIn,
+    UserPlus,
+    Dumbbell,
+    LogOut,
+    ArrowLeft,
+    PlusCircle,
+    Save,
+    Trash2,
+    User,
+    Users,
+    ClipboardList,
+    DollarSign,
+    BookCopy,
+    CheckSquare,
+    Square,
+    Settings,
+    ChevronsRight,
+    Coffee,
+    HeartPulse,
+    Repeat,
+    Ruler,
+    AlertTriangle,
+    Calendar,
+    ChevronLeft,
+    ChevronRight,
+    Timer,
+    Edit,
+    Home,
+    X,
+    Share
+} = LucideReact;
 
 // --- GERENCIADOR DE DADOS (LocalStorage) ---
 const db = {
@@ -1271,13 +1302,13 @@ const TrainingHistoryPage = () => {
 };
 
 // --- COMPONENTE PRINCIPAL DO APP ---
-export default function App() {
+const App = () => {
     useEffect(() => {
         initializeLocalDb();
     }, []);
 
     return (<AuthProvider><MainApp /></AuthProvider>);
-}
+};
 
 const MainApp = () => {
     const { user, logout, loading } = useAuth();
@@ -1426,3 +1457,6 @@ const InstallPWA = () => {
 
     return null;
 };
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
