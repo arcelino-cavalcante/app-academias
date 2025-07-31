@@ -32,6 +32,9 @@ const {
     Share
 } = LucideReact;
 
+const firebaseAuth = firebase.auth();
+const firebaseDb = firebase.firestore();
+
 // --- GERENCIADOR DE DADOS (LocalStorage) ---
 const db = {
     getItem: (key) => {
@@ -73,14 +76,16 @@ const AuthProvider = ({ children }) => {
         if (loggedInUser) setUser(loggedInUser);
         setLoading(false);
     }, []);
-    const login = (email, password) => {
-        const foundUser = (db.getItem('gym_users') || []).find(u => u.email === email && u.password === password);
-        if (foundUser) {
-            db.setItem('gym_current_user', foundUser);
-            setUser(foundUser);
+    const login = async (email, password) => {
+        try {
+            const cred = await firebaseAuth.signInWithEmailAndPassword(email, password);
+            const userData = { id: cred.user.uid, email: cred.user.email, role: 'admin' };
+            db.setItem('gym_current_user', userData);
+            setUser(userData);
             return { success: true };
+        } catch (err) {
+            return { success: false, message: 'Email ou senha inválidos.' };
         }
-        return { success: false, message: 'Email ou senha inválidos.' };
     };
     const logout = () => {
         db.setItem('gym_current_user', null);
@@ -259,9 +264,9 @@ const LoginPage = () => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const { login } = useAuth();
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault(); setError('');
-        const result = login(email, password);
+        const result = await login(email, password);
         if (!result.success) setError(result.message);
     };
     return (
@@ -381,18 +386,24 @@ const AddMemberForm = ({ setPage }) => {
     const [plans, setPlans] = useState([]);
     const [modalInfo, setModalInfo] = useState({ show: false, message: '' });
     useEffect(() => { setPlans(db.getItem('gym_plans') || []); }, []);
-    const handleAddMember = (e) => {
+    const handleAddMember = async (e) => {
         e.preventDefault();
         if (!planId) { setModalInfo({ show: true, message: 'Selecione um plano.' }); return; }
         const users = db.getItem('gym_users') || [];
         if (users.some(u => u.email === email)) { setModalInfo({ show: true, message: 'Email já em uso.' }); return; }
-        users.push({
+        const newMember = {
             id: `user_${Date.now()}`, name, email, password, role: 'member',
             planId, joinDate: new Date().toISOString(), paymentHistory: [],
             sheetId: null, currentWorkoutIndex: 0,
             personalSheetId: null, currentPersonalWorkoutIndex: 0, activeTrainingMode: 'assisted'
-        });
+        };
+        users.push(newMember);
         db.setItem('gym_users', users);
+        try {
+            await firebaseDb.collection('members').doc(newMember.id).set(newMember);
+        } catch (err) {
+            console.error('Erro ao salvar no Firebase', err);
+        }
         setModalInfo({ show: true, message: `Aluno ${name} cadastrado!` });
         setName(''); setEmail(''); setPassword(''); setPlanId('');
     };
