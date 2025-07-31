@@ -7,7 +7,8 @@
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-  <script crossorigin src="https://unpkg.com/lucide-react@latest/dist/umd/lucide-react.js"></script>
+  <!-- Carrega a versão UMD minimizada do lucide-react para expor a variável global LucideReact -->
+  <script crossorigin src="https://unpkg.com/lucide-react@latest/dist/umd/lucide-react.min.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
@@ -16,7 +17,8 @@
       apiKey: "AIzaSyDz411EoZkeIX2wv0hOqJK-L5YjJyZzKxQ",
       authDomain: "app-academia-a7a6f.firebaseapp.com",
       projectId: "app-academia-a7a6f",
-      storageBucket: "app-academia-a7a6f.firebasestorage.app",
+      <!-- O domínio correto do bucket do Firebase termina com appspot.com -->
+      storageBucket: "app-academia-a7a6f.appspot.com",
       messagingSenderId: "693049410117",
       appId: "1:693049410117:web:b7d110ee6d46d37ab0d92c"
     };
